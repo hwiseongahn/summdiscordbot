@@ -19,15 +19,34 @@ class Client(discord.Client):
         print(f'Logged in as {self.user}!')
 
     async def on_message(self, message):
-        max_message_length = 1000
+        channel_id = message.channel.id
+        channel = self.get_channel(channel_id)
+        max_message_length = 2000
         print(f'Message received from {message.author}:{message.content}')
         print(f"Message Type: {type(message.content)}")
 
-        # if user sends messages that calls bot
+        user_input = ""
+        # if user wants to use genai
         if message.content.startswith('!genai'):
             user_input = message.content[6:]
             genai_response = self.model.generate_content(user_input)
             response = genai_response.text
-            if len(response) > max_message_length:
-                response = response[:max_message_length]
-            await message.channel.send(response)
+        # if user wants to summarize last 5 messages
+        elif message.content.startswith('!last5'):
+            # Fetch the last 5 messages from the channel
+            messages = [msg async for msg in message.channel.history(limit=5)]
+
+            # Iterate over the messages and make them one string
+            user_input = ''
+            for msg in messages:
+                user_input += f'{msg.author}: {msg.content}\n'
+            user_input = "summarize this conversation: " + user_input
+        # if it isn't a command, do nothing
+        else:
+            return
+        genai_response = self.model.generate_content(user_input)
+        response = genai_response.text
+        if len(response) > max_message_length:
+            print("long response!")
+            response = response[:max_message_length]
+        await message.channel.send(response)
