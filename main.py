@@ -7,7 +7,7 @@ import os
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
 genai_api_key = os.getenv("GENAI_API_KEY")
-
+# comment
 
 # set intents to allow receiving messages
 intents = discord.Intents.default()
