@@ -5,8 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dd4a0c77-4e4f-4a92-b8e6-806d6bc89d4b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client.py" beforeDir="false" afterPath="$PROJECT_DIR$/client.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -71,7 +69,7 @@
       <updated>1728439304185</updated>
       <workItem from="1728439306339" duration="1028000" />
       <workItem from="1734577660007" duration="9192000" />
-      <workItem from="1734622076744" duration="10217000" />
+      <workItem from="1734622076744" duration="10578000" />
     </task>
     <servers />
   </component>

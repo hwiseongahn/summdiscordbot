@@ -10,9 +10,6 @@ class Client(discord.Client):
         genai.configure(api_key=genai_api_key)
         self.model = genai.GenerativeModel("gemini-1.5-flash")
 
-    # initialize a gemini-1.5-flash object
-    # genai.configure(api_key=genai_api_key)
-    # model = genai.GenerativeModel("gemini-1.5-flash")
 
     async def on_ready(self):
         # discord bot is ready
@@ -32,6 +29,7 @@ class Client(discord.Client):
             genai_response = self.model.generate_content(user_input)
             response = genai_response.text
         # if user wants to summarize last 5 messages
+
         elif message.content.startswith('!last5'):
             # Fetch the last 5 messages from the channel
             messages = [msg async for msg in message.channel.history(limit=5)]
@@ -41,9 +39,11 @@ class Client(discord.Client):
             for msg in messages:
                 user_input += f'{msg.author}: {msg.content}\n'
             user_input = "summarize this conversation: " + user_input
+
         # if it isn't a command, do nothing
         else:
             return
+        # now generate content, given the user input
         genai_response = self.model.generate_content(user_input)
         response = genai_response.text
         if len(response) > max_message_length:
