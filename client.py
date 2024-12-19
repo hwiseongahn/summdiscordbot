@@ -24,7 +24,7 @@ class Client(discord.Client):
         channel_id = message.channel.id
         channel = self.get_channel(channel_id)
         max_message_length = 2000  # messages can't exceed 2000 in discord
-        print(f'Message received from {message.author}:{message.content}')
+        print(f'Message received from {message.author}: {message.content}')
 
         user_input = ""  # user input is initially empty
 
@@ -36,8 +36,12 @@ class Client(discord.Client):
                 response += ", user gave empty statement"
                 # response = "error" above, so it sends that if there's an issue (blank space)
                 await message.channel.send(response)
+
+            genai_response = self.model.generate_content(user_input)
+            if genai_response.candidates:  # if genai gives an error for any reason
+                response = genai_response.candidates[0]
+                await message.channel.send(response)  # send response explaining error
             else:
-                genai_response = self.model.generate_content(user_input)
                 response = genai_response.text
 
         # if user wants to summarize last 5 messages
