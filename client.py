@@ -16,6 +16,10 @@ class Client(discord.Client):
         print(f'Logged in as {self.user}!')
 
     async def on_message(self, message):
+        response = "Error"
+        # if the message is the bot's own, do nothing
+        if message.author == self.user:
+            return
         channel_id = message.channel.id
         channel = self.get_channel(channel_id)
         max_message_length = 2000
@@ -26,6 +30,11 @@ class Client(discord.Client):
         # if user wants to use genai
         if message.content.startswith('!genai'):
             user_input = message.content[6:]
+            if user_input == "":
+                response += ", empty statement"
+                # response = "error" above, so it sends that if there's an issue (blank space)
+                await message.channel.send(response)
+
             genai_response = self.model.generate_content(user_input)
             response = genai_response.text
         # if user wants to summarize last 5 messages
