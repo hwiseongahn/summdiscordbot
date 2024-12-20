@@ -3,6 +3,13 @@ import google.generativeai as genai
 import os
 
 
+async def truncateLongMessage(max_message_length, response):
+    if len(response) > max_message_length:  # if message exceeds discord's limit, cut it
+        print("long response!")  # prints to terminal that message exceeded discord limit
+        response = response[:max_message_length]
+    return response
+
+
 class Client(discord.Client):
     def __init__(self, intents):
         super().__init__(intents=intents)
@@ -38,9 +45,10 @@ class Client(discord.Client):
                 await message.channel.send(response)
 
             genai_response = self.model.generate_content(user_input)
-            if genai_response.candidates:  # if genai gives an error for any reason
-                response = genai_response.candidates[0]
+            if genai_response.candidates[0].finish_reason.value == 4:  # if genai gives an error for any reason
+                response = "Gemini came across copyright issues"
                 await message.channel.send(response)  # send response explaining error
+                return
             else:
                 response = genai_response.text
 
@@ -62,7 +70,7 @@ class Client(discord.Client):
         # since user's message is a command, generate content, given the user input
         genai_response = self.model.generate_content(user_input)
         response = genai_response.text
-        if len(response) > max_message_length:  # if message exceeds discord's limit, cut it
-            print("long response!")  # prints to terminal that message exceeded discord limit
-            response = response[:max_message_length]
+        response = await truncateLongMessage(max_message_length, response)
         await message.channel.send(response)
+
+
