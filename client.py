@@ -28,12 +28,9 @@ class Client(discord.Client):
         if message.author == self.user:  # if the message is from the bot, do nothing
             return
 
-        channel_id = message.channel.id
-        channel = self.get_channel(channel_id)
         max_message_length = 2000  # messages can't exceed 2000 in discord
+        max_summ_length = 150  # don't summarize more messages than 150
         print(f'Message received from {message.author}: {message.content}')
-
-        user_input = ""  # user input is initially empty
 
         # if user wants to use genai
         if message.content.startswith('!genai'):
@@ -49,19 +46,31 @@ class Client(discord.Client):
                 response = "Gemini came across copyright issues"
                 await message.channel.send(response)  # send response explaining error
                 return
-            else:
-                response = genai_response.text
-
         # if user wants to summarize last 5 messages
-        elif message.content.startswith('!last5'):
+        elif message.content.startswith('!last'):
+            user_input = message.content[5:]
+            num_of_msg = 0
+            # make sure the input that comes after '!last' is an int
+            for i in range(0, 3):
+                try:
+                    num_of_msg += int(user_input[i]) * pow(10, 2 - i)
+                except ValueError:  # catch error for when user doesn't input an int
+                    await message.channel.send("input was not an integer")
+                    return
+                except IndexError:
+                    break
+            if num_of_msg > max_summ_length:  # catch error for input > 150 summarized messages
+                await message.channel.send(f"cannot summarize {num_of_msg}, try 150 or less.")
+                return
             # Fetch the last 5 messages from the channel
-            messages = [msg async for msg in message.channel.history(limit=5)]
+            messages = [msg async for msg in message.channel.history(limit=num_of_msg + 1)]
 
             # Iterate over the messages and make them one string
             user_input = ''
-            for msg in reversed(messages):  # reverse messages to get chronological order of msg
+            for msg in reversed(messages[1:]):  # reverse messages to get chronological order of msg
                 user_input += f'{msg.author}: {msg.content}\n'
             user_input = "summarize this conversation: " + user_input
+            print(user_input)
 
         # if user's message isn't a command, do nothing
         else:
@@ -72,5 +81,3 @@ class Client(discord.Client):
         response = genai_response.text
         response = await truncateLongMessage(max_message_length, response)
         await message.channel.send(response)
-
-

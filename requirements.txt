@@ -7,7 +7,7 @@ audioop-lts==0.2.1
 cachetools==5.5.0
 certifi==2024.12.14
 charset-normalizer==3.4.0
-discord==2.3.2
+discord~=2.3.2
 discord.py==2.4.0
 frozenlist==1.5.0
 google-ai-generativelanguage==0.6.10
@@ -30,7 +30,7 @@ pyasn1_modules==0.4.1
 pydantic==2.10.4
 pydantic_core==2.27.2
 pyparsing==3.2.0
-python-dotenv==1.0.1
+python-dotenv~=1.0.1
 requests==2.32.3
 rsa==4.9
 tqdm==4.67.1
