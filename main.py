@@ -25,6 +25,7 @@ async def change_bot_status():
 async def on_ready():
     print("Bot ready!")
     change_bot_status.start()
+
     try:
         synced_commands = await bot.tree.sync(guild=GUILD_ID)
         print(f"Synced {len(synced_commands)} commands.")
