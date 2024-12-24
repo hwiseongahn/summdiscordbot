@@ -49,7 +49,7 @@ class Client(discord.Client):
             try:
                 num_of_msg = int(user_input)
             except ValueError:  # catch error when user uses command without an int
-                await message.channel.send("input was not an integer")
+                await message.channel.send(f"input was not an integer. input: {num_of_msg}")
                 return
             
             if num_of_msg > max_summ_length:  # catch error for input > 150 summarized messages
@@ -71,6 +71,6 @@ class Client(discord.Client):
 
         # since user's message is a command, generate content, send msg given the user input
         genai_response = self.model.generate_content(user_input)
-        response = genai_response.text
+        response = f"This is a summary of the last {num_of_msg} messages." + genai_response.text
         response = await truncateLongMessage(response)
         await message.channel.send(response)
