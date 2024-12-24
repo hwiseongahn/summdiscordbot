@@ -23,7 +23,7 @@ class Client(discord.Client):
         print(f'Logged in as {self.user}!')
 
     async def on_message(self, message):
-
+        num_of_msg = -1
         response = "Error"  # have a default response of Error (easier to debug)
 
         if message.author == self.user:  # if the message is from the bot, do nothing
@@ -71,6 +71,9 @@ class Client(discord.Client):
 
         # since user's message is a command, generate content, send msg given the user input
         genai_response = self.model.generate_content(user_input)
-        response = f"This is a summary of the last {num_of_msg} messages." + genai_response.text
+        if num_of_msg > 0:
+            response = f"This is a summary of the last {num_of_msg} messages. " + genai_response.text
+        else:
+            response = genai_response.text
         response = await truncateLongMessage(response)
         await message.channel.send(response)
