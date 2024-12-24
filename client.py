@@ -45,19 +45,13 @@ class Client(discord.Client):
                 return
 
         elif message.content.startswith('!last'):  # if user wants to summarize last few messages
-            user_input = message.content[5:]  # exclude user saying '!last' from input
-            num_of_msg = 0
-
-            for i in range(0, 3):  # loop through the next 3 characters the user sent
-                try:
-                    num_of_msg += int(user_input[i]) * pow(10, 2 - i)
-                except ValueError:  # catch error when user uses command without an int
-                    await message.channel.send("input was not an integer")
-                    return
-                except IndexError:  # if num of msgs to summ was less than 3 characters long
-                    num_of_msg /= pow(10, 2 - i)
-                    num_of_msg = int(num_of_msg)
-                    break
+            user_input = message.content[5:]  # remove user saying '!last' from input
+            try:
+                num_of_msg = int(user_input)
+            except ValueError:  # catch error when user uses command without an int
+                await message.channel.send("input was not an integer")
+                return
+            
             if num_of_msg > max_summ_length:  # catch error for input > 150 summarized messages
                 await message.channel.send(f"cannot summarize {num_of_msg}, try 150 or less.")
                 return
