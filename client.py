@@ -75,5 +75,9 @@ class Client(discord.Client):
             response = f"This is a summary of the last {num_of_msg} messages. " + genai_response.text
         else:
             response = genai_response.text
-        response = await truncateLongMessage(response)
-        await message.channel.send(response)
+        # response = await truncateLongMessage(response)
+        
+        for i in range (0, len(response), 2000):
+            await message.channel.send(response[i:i+2000])
+
+
