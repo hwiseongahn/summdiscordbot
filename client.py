@@ -29,7 +29,7 @@ class Client(discord.Client):
         if message.author == self.user:  # if the message is from the bot, do nothing
             return
 
-        max_summ_length = 150  # don't summarize more messages than 150
+        max_summ_length = 300  # don't summarize more messages than 300
         print(f'Message received from {message.author}: {message.content}')
 
         if message.content.startswith('!genai'):  # if user wants to use genai
