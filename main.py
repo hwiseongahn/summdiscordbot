@@ -57,7 +57,9 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int):
     user_input = "summarize this conversation:\n " + user_input
     print(user_input)
     genai_response = model.generate_content(user_input).text
-    await interaction.response.send_message(f"{interaction.user.name} said to summarize the last {msg_to_summ} messages. {genai_response}")
+    await interaction.response.send_message(f"{interaction.user.name} said to summarize the last {msg_to_summ} messages.")
+    for i in range (0, len(genai_response), 2000):
+        await interaction.channel.send(genai_response[i:i+2000])
 
 async def main():
     async with bot:
