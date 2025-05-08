@@ -23,13 +23,13 @@ class Client(discord.Client):
         print(f'Logged in as {self.user}!')
 
     async def on_message(self, message):
-
+        num_of_msg = -1
         response = "Error"  # have a default response of Error (easier to debug)
 
         if message.author == self.user:  # if the message is from the bot, do nothing
             return
 
-        max_summ_length = 150  # don't summarize more messages than 150
+        max_summ_length = 300  # don't summarize more messages than 300
         print(f'Message received from {message.author}: {message.content}')
 
         if message.content.startswith('!genai'):  # if user wants to use genai
@@ -45,13 +45,13 @@ class Client(discord.Client):
                 return
 
         elif message.content.startswith('!last'):  # if user wants to summarize last few messages
-            user_input = message.content[5:]  # exclude user saying '!last' from input
+            user_input = message.content[5:]  # remove user saying '!last' from input
             try:
                 num_of_msg = int(user_input)
             except ValueError:  # catch error when user uses command without an int
-                await message.channel.send("input was not an integer")
+                await message.channel.send(f"input was not an integer. input: {num_of_msg}")
                 return
-
+            
             if num_of_msg > max_summ_length:  # catch error for input > 150 summarized messages
                 await message.channel.send(f"cannot summarize {num_of_msg}, try 150 or less.")
                 return
@@ -71,6 +71,13 @@ class Client(discord.Client):
 
         # since user's message is a command, generate content, send msg given the user input
         genai_response = self.model.generate_content(user_input)
-        response = genai_response.text
-        response = await truncateLongMessage(response)
-        await message.channel.send(response)
+        if num_of_msg > 0:
+            response = f"This is a summary of the last {num_of_msg} messages. " + genai_response.text
+        else:
+            response = genai_response.text
+        # response = await truncateLongMessage(response)
+        
+        for i in range (0, len(response), 2000):
+            await message.channel.send(response[i:i+2000])
+
+
