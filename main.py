@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands, tasks
+from discord import app_commands
 import os
 from dotenv import load_dotenv
 import asyncio
@@ -42,6 +43,11 @@ async def hello(interaction: discord.Interaction):
 async def bye(interaction: discord.Interaction):
     await interaction.response.send_message(f"{interaction.user.mention} BYE!")
 
+
+@bot.tree.command(name="sum", description="summarize this conversation", guild=GUILD_ID)
+@app_commands.describe(msg_to_summ="How many messages should I summarize")
+async def summarize(interaction: discord.Interaction, msg_to_summ: int):
+    await interaction.response.send_message(f"{interaction.user.name} said to summarize {msg_to_summ}")
 
 async def main():
     async with bot:
