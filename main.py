@@ -43,11 +43,6 @@ async def bye(interaction: discord.Interaction):
     await interaction.response.send_message(f"{interaction.user.mention} BYE!")
 
 
-@bot.command(name="hello")
-async def hello_prefix(ctx):
-    await ctx.send(f"{ctx.author.mention} Hello there!")
-
-
 async def main():
     async with bot:
         await bot.start(discord_token)
