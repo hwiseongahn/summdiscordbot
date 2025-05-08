@@ -48,7 +48,7 @@ async def bye(interaction: discord.Interaction):
 
 
 @bot.tree.command(name="summarize", description="summarize this conversation", guild=GUILD_ID)
-@app_commands.describe(msg_to_summ="How many messages should be summarized?")
+@app_commands.describe(msg_to_summ="How many previous messages should be summarized?")
 async def summarize(interaction: discord.Interaction, msg_to_summ: int):
     messages = [msg async for msg in interaction.channel.history(limit=msg_to_summ+1)]
     user_input = ''
@@ -60,6 +60,10 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int):
     await interaction.response.send_message(f"{interaction.user.name} said to summarize the last {msg_to_summ} messages.")
     for i in range (0, len(genai_response), 2000):
         await interaction.channel.send(genai_response[i:i+2000])
+
+@bot.tree.context_menu(name="Summarize from here", guild=GUILD_ID)
+async def summarize_from_here(interaction: discord.Interaction, message: discord.Message):
+    await interaction.response.send_message(f"Summarizing from message: {message.content}")
 
 async def main():
     async with bot:
