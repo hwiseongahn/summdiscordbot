@@ -7,6 +7,7 @@ import asyncio
 from itertools import cycle
 import logging
 import google.generativeai as genai
+from modal import MessageCountModal
 
 load_dotenv()
 discord_token = os.getenv('DISCORD_TOKEN')
@@ -61,9 +62,14 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int):
     for i in range (0, len(genai_response), 2000):
         await interaction.channel.send(genai_response[i:i+2000])
 
-@bot.tree.context_menu(name="Summarize from here", guild=GUILD_ID)
+@bot.tree.context_menu(name="Summarize after message", guild=GUILD_ID)
 async def summarize_from_here(interaction: discord.Interaction, message: discord.Message):
-    await interaction.response.send_message(f"Summarizing from message: {message.content}")
+    await interaction.response.send_modal(MessageCountModal(message))
+    # await interaction.response.send_message(f"Summarizing messages before: ``{message.content}``")
+
+@bot.tree.context_menu(name="Summarize before message", guild=GUILD_ID)
+async def summarize_from_here(interaction: discord.Interaction, message: discord.Message):
+    await interaction.response.send_message(f"Summarizing messages before: ``{message.content}``")
 
 async def main():
     async with bot:
