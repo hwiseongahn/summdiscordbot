@@ -69,13 +69,38 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int):
     for i in range (0, len(genai_response), 2000):
         await interaction.channel.send(genai_response[i:i+2000])
 
+
+@bot.tree.command(name="bullet", description="bullet form summarize this conversation")
+@app_commands.describe(msg_to_summ="How many previous messages should be summarized in bullet form?")
+async def summarize(interaction: discord.Interaction, msg_to_summ: int):
+    if msg_to_summ > 300:
+        await interaction.response.send_message("cannot summarize more than 300 messages", ephemeral=True)
+        return
+    elif msg_to_summ < 1:
+        await interaction.response.send_message("cannot summarize less than 1 message", ephemeral=True)
+        return
+    messages = [msg async for msg in interaction.channel.history(limit=msg_to_summ + 1)]
+    user_input = ''
+    for msg in reversed(messages[1:]):  # reverse messages to get chronological order of msg
+        user_input += f'{msg.author}: {msg.content}\n'
+    user_input = "summarize this conversation using bullet points only. Do not use any non-bulletpoint sentences. Use - as bullet points and # for header, similar to markdown:\n " + user_input
+    print(user_input)
+    genai_response = model.generate_content(user_input).text
+    await interaction.response.send_message(
+        f"{interaction.user.name} said to summarize the last {msg_to_summ} messages in bullet form.")
+    for i in range(0, len(genai_response), 2000):
+        await interaction.channel.send(genai_response[i:i + 2000])
+
+
 @bot.tree.context_menu(name="Summarize after message")
 async def summarize_from_here(interaction: discord.Interaction, message: discord.Message):
     await interaction.response.send_modal(MessageCountModal(message, True ))
 
+
 @bot.tree.context_menu(name="Summarize before message")
 async def summarize_from_here(interaction: discord.Interaction, message: discord.Message):
     await interaction.response.send_modal(MessageCountModal(message, False ))
+
 
 async def main():
     async with bot:
