@@ -52,8 +52,8 @@ async def bye(interaction: discord.Interaction):
 async def summarize(interaction: discord.Interaction, msg_to_summ: int, send_summary: app_commands.Choice[str]):
     
     send_summary = send_summary.value.lower() == "yes" # convert to boolean
-    await interaction.response.defer(thinking=True)  # defer the response to give time for processing
-    asyncio.sleep()
+    #await interaction.response.defer(thinking=True)  # defer the response to give time for processing
+    #asyncio.sleep()
     print(send_summary)
     
 
