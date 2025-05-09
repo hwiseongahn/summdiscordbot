@@ -32,32 +32,27 @@ async def on_ready():
     change_bot_status.start()
 
     try:
-        synced_commands = await bot.tree.sync() #put (guild=GUILD_ID) inside bot.tree.sync to test inside server
+        synced_commands = await bot.tree.sync(guild=GUILD_ID) #put (guild=GUILD_ID) inside bot.tree.sync to test inside server
         print(f"Synced {len(synced_commands)} commands.")
     except Exception as e:
         print("Error trying to sync commands", e)
-
 
 @bot.tree.command(name="hello", description="says hello FR")
 async def hello(interaction: discord.Interaction):
     await interaction.response.send_message(f"{interaction.user.mention} Hello there!")
 
-
 @bot.tree.command(name="bye", description="says bye FR")
 async def bye(interaction: discord.Interaction):
     await interaction.response.send_message(f"{interaction.user.mention} BYE!")
 
-@bot.tree.command(name="summarize", description="summarize this conversation")
+@bot.tree.command(name="summarize", description="summarize this conversation", guild=GUILD_ID)
 @app_commands.describe(msg_to_summ="How many previous messages should be summarized?", send_summary="Send summary to channel?")
-@app_commands.choices(send_summary=[
-    discord.app_commands.Choice(name="Yes", value="yes"),
-    discord.app_commands.Choice(name="No", value="no")
-])
+@app_commands.choices(send_summary=[discord.app_commands.Choice(name="Yes", value="yes"), discord.app_commands.Choice(name="No", value="no")])
 
 async def summarize(interaction: discord.Interaction, msg_to_summ: int, send_summary: app_commands.Choice[str]):
     
     send_summary = send_summary.value.lower() == "yes" # convert to boolean
-    await interaction.response.defer(thinking=True, ephemeral=True)  # defer the response to give time for processing
+    await interaction.response.defer(thinking=True)  # defer the response to give time for processing
     print(send_summary)
     
 
@@ -76,7 +71,7 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int, send_sum
     user_input = "summarize this conversation:\n " + user_input
     print(user_input)
     genai_response = model.generate_content(user_input).text
-
+    genai_response = "summary of the last " + str(msg_to_summ) + " messages:\n" + genai_response
     for i in range(0, len(genai_response), 2000):
         if send_summary:
             await interaction.followup.send(genai_response[i:i+2000], ephemeral=False)
