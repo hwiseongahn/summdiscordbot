@@ -52,7 +52,10 @@ async def bye(interaction: discord.Interaction):
 async def summarize(interaction: discord.Interaction, msg_to_summ: int, send_summary: app_commands.Choice[str]):
     
     send_summary = send_summary.value.lower() == "yes" # convert to boolean
-    await interaction.response.defer(thinking=True)  # defer the response to give time for processing
+    if send_summary:
+        await interaction.response.defer(thinking=True, ephemeral=False)  # defer the response to give time for processing
+    else:
+        await interaction.response.defer(thinking=True, ephemeral=True)
     print(send_summary)
     
     if msg_to_summ > 300:
