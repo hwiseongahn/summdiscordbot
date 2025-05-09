@@ -56,7 +56,6 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int, send_sum
     #asyncio.sleep()
     print(send_summary)
     
-
     if msg_to_summ > 300:
         await interaction.followup.send("cannot summarize more than 300 messages", ephemeral=True)
         return
@@ -73,11 +72,11 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int, send_sum
     print(user_input)
     genai_response = model.generate_content(user_input).text
     genai_response = "summary of the last " + str(msg_to_summ) + " messages:\n" + genai_response
-    for i in range(0, len(genai_response), 2000):
-        if send_summary:
-            await interaction.followup.send(genai_response[i:i+2000], ephemeral=False)
-        else:
-            await interaction.followup.send(genai_response[i:i+2000], ephemeral=True)
+
+    if send_summary:
+        await interaction.followup.send(genai_response[i:i+2000], ephemeral=False)
+    else:
+        await interaction.followup.send(genai_response[i:i+2000], ephemeral=True)
 
 #three dots on message > apps > context menu bot commands
 @bot.tree.context_menu(name="Summarize after message")
