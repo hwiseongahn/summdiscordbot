@@ -32,7 +32,7 @@ async def on_ready():
     change_bot_status.start()
 
     try:
-        synced_commands = await bot.tree.sync(guild=GUILD_ID) #put (guild=GUILD_ID) inside bot.tree.sync to test inside server
+        synced_commands = await bot.tree.sync() #put (guild=GUILD_ID) inside bot.tree.sync to test inside server
         print(f"Synced {len(synced_commands)} commands.")
     except Exception as e:
         print("Error trying to sync commands", e)
@@ -47,7 +47,7 @@ async def hello(interaction: discord.Interaction):
 async def bye(interaction: discord.Interaction):
     await interaction.response.send_message(f"{interaction.user.mention} BYE!")
 
-@bot.tree.command(name="summarize", description="summarize this conversation", guild=GUILD_ID)
+@bot.tree.command(name="summarize", description="summarize this conversation")
 @app_commands.describe(msg_to_summ="How many previous messages should be summarized?", send_summary="Send summary to channel?")
 @app_commands.choices(send_summary=[
     discord.app_commands.Choice(name="Yes", value="yes"),
