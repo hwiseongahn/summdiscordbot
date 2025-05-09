@@ -17,13 +17,13 @@ model = genai.GenerativeModel("gemini-1.5-flash")
 
 logging.basicConfig(level=logging.INFO)
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
-bot_statuses = cycle(["Status one", "Status two"])
+bot_statuses = cycle(["Made by Hwiseong 💻", "Made by Darsh 🧠"])
 GUILD_ID = discord.Object(id=1319142553030885447)
 
 
 @tasks.loop(seconds=5)
 async def change_bot_status():
-    await bot.change_presence(activity=discord.Game(next(bot_statuses)))
+    await bot.change_presence(activity=discord.CustomActivity(name=next(bot_statuses)))
 
 
 @bot.event
@@ -58,7 +58,6 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int):
     elif msg_to_summ < 1:
         await interaction.response.send_message("cannot summarize less than 1 message", ephemeral=True)
         return
-    
     messages = [msg async for msg in interaction.channel.history(limit=msg_to_summ+1)]
     user_input = ''
     for msg in reversed(messages[1:]):  # reverse messages to get chronological order of msg
