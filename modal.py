@@ -37,9 +37,9 @@ class MessageCountModal(Modal, title="Summarize Messages"):
             return
         print (count)
         if self.summ_after:
-            messages = [msg async for msg in interaction.channel.history(after=self.message, limit=count)]
+            messages = [self.message] + [msg async for msg in interaction.channel.history(after=self.message, limit=count - 1)]
         else:
-            messages = [msg async for msg in interaction.channel.history(limit=count + 1)]
+            messages = [msg async for msg in interaction.channel.history(limit=count)]
         
         user_input = ''
 
