@@ -51,6 +51,14 @@ async def bye(interaction: discord.Interaction):
 @bot.tree.command(name="summarize", description="summarize this conversation")
 @app_commands.describe(msg_to_summ="How many previous messages should be summarized?")
 async def summarize(interaction: discord.Interaction, msg_to_summ: int):
+    
+    if msg_to_summ > 300:
+        await interaction.response.send_message("cannot summarize more than 300 messages", ephemeral=True)
+        return
+    elif msg_to_summ < 1:
+        await interaction.response.send_message("cannot summarize less than 1 message", ephemeral=True)
+        return
+    
     messages = [msg async for msg in interaction.channel.history(limit=msg_to_summ+1)]
     user_input = ''
     for msg in reversed(messages[1:]):  # reverse messages to get chronological order of msg
