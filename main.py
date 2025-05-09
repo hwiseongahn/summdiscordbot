@@ -79,7 +79,7 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int, send_sum
 
     for i in range(0, len(genai_response), 2000):
         if send_summary:
-            await interaction.followup.send(genai_response[i:i+2000])
+            await interaction.followup.send(genai_response[i:i+2000], ephemeral=False)
         else:
             await interaction.followup.send(genai_response[i:i+2000], ephemeral=True)
 
