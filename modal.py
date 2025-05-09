@@ -5,7 +5,6 @@ import google.generativeai as genai
 import os
 import google.generativeai as genai
 
-
 class MessageCountModal(Modal, title="Summarize Messages"):
     def __init__(self, message: discord.Message, summ_after: bool):
         genai_api_key = os.getenv("GENAI_API_KEY")
