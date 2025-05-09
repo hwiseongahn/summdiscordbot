@@ -49,8 +49,9 @@ async def bye(interaction: discord.Interaction):
 
 
 @bot.tree.command(name="summarize", description="summarize this conversation")
-@app_commands.describe(msg_to_summ="How many previous messages should be summarized?")
-async def summarize(interaction: discord.Interaction, msg_to_summ: int):
+@app_commands.describe(msg_to_summ="How many previous messages should be summarized?", only_you_see="Only you can see the summary")
+@app_commands.choices(only_you_see=[discord.app_commands.Choice(name="Yes", value=True), discord.app_commands.Choice(name="No", value=False)])
+async def summarize(interaction: discord.Interaction, msg_to_summ: int, only_you_see: bool ):
     
     if msg_to_summ > 300:
         await interaction.response.send_message("cannot summarize more than 300 messages", ephemeral=True)
@@ -65,10 +66,11 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int):
     user_input = "summarize this conversation:\n " + user_input
     print(user_input)
     genai_response = model.generate_content(user_input).text
-    await interaction.response.send_message(f"{interaction.user.name} said to summarize the last {msg_to_summ} messages.")
+    await interaction.response.send_message(f"{interaction.user.name} said to summarize the last {msg_to_summ} messages.", ephemeral=only_you_see)
     for i in range (0, len(genai_response), 2000):
-        await interaction.channel.send(genai_response[i:i+2000])
+        await interaction.channel.send(genai_response[i:i+2000], ephemeral=only_you_see)
 
+#three dots on message > apps > context menu bot commands
 @bot.tree.context_menu(name="Summarize after message")
 async def summarize_from_here(interaction: discord.Interaction, message: discord.Message):
     await interaction.response.send_modal(MessageCountModal(message, True ))
