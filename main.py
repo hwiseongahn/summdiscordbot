@@ -83,11 +83,11 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int):
     user_input = ''
     for msg in reversed(messages[1:]):  # reverse messages to get chronological order of msg
         user_input += f'{msg.author}: {msg.content}\n'
-    user_input = "summarize this conversation using bullet points only. Do not use any non-bulletpoint sentences. Use - as bullet points and # for header, similar to markdown:\n " + user_input
+    user_input = f"summarize this conversation using bullet points only. Do not use any non-bulletpoint sentences. Use '-' as bullet points, ' - ' for subbullet points, and # for header, similar to markdown. When a user is mentioned, say their <@userId>. The conversation is:\n " + user_input
     print(user_input)
     genai_response = model.generate_content(user_input).text
     await interaction.response.send_message(
-        f"{interaction.user.name} said to summarize the last {msg_to_summ} messages in bullet form.")
+        f"## {interaction.user.name} said to summarize the last {msg_to_summ} messages in bullet form.")
     for i in range(0, len(genai_response), 2000):
         await interaction.channel.send(genai_response[i:i + 2000])
 
