@@ -32,23 +32,23 @@ async def on_ready():
     change_bot_status.start()
 
     try:
-        synced_commands = await bot.tree.sync(guild=GUILD_ID)
+        synced_commands = await bot.tree.sync()
         print(f"Synced {len(synced_commands)} commands.")
     except Exception as e:
         print("Error trying to sync commands", e)
 
 
-@bot.tree.command(name="hello", description="says hello FR", guild=GUILD_ID)
+@bot.tree.command(name="hello", description="says hello FR")
 async def hello(interaction: discord.Interaction):
     await interaction.response.send_message(f"{interaction.user.mention} Hello there!")
 
 
-@bot.tree.command(name="bye", description="says bye FR", guild=GUILD_ID)
+@bot.tree.command(name="bye", description="says bye FR")
 async def bye(interaction: discord.Interaction):
     await interaction.response.send_message(f"{interaction.user.mention} BYE!")
 
 
-@bot.tree.command(name="summarize", description="summarize this conversation", guild=GUILD_ID)
+@bot.tree.command(name="summarize", description="summarize this conversation")
 @app_commands.describe(msg_to_summ="How many previous messages should be summarized?")
 async def summarize(interaction: discord.Interaction, msg_to_summ: int):
     messages = [msg async for msg in interaction.channel.history(limit=msg_to_summ+1)]
@@ -62,11 +62,11 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int):
     for i in range (0, len(genai_response), 2000):
         await interaction.channel.send(genai_response[i:i+2000])
 
-@bot.tree.context_menu(name="Summarize after message", guild=GUILD_ID)
+@bot.tree.context_menu(name="Summarize after message")
 async def summarize_from_here(interaction: discord.Interaction, message: discord.Message):
     await interaction.response.send_modal(MessageCountModal(message, True ))
 
-@bot.tree.context_menu(name="Summarize before message", guild=GUILD_ID)
+@bot.tree.context_menu(name="Summarize before message")
 async def summarize_from_here(interaction: discord.Interaction, message: discord.Message):
     await interaction.response.send_modal(MessageCountModal(message, False ))
 
