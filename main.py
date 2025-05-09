@@ -64,16 +64,14 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int):
 
 @bot.tree.context_menu(name="Summarize after message", guild=GUILD_ID)
 async def summarize_from_here(interaction: discord.Interaction, message: discord.Message):
-    await interaction.response.send_modal(MessageCountModal(message))
-    # await interaction.response.send_message(f"Summarizing messages before: ``{message.content}``")
+    await interaction.response.send_modal(MessageCountModal(message, True ))
 
 @bot.tree.context_menu(name="Summarize before message", guild=GUILD_ID)
 async def summarize_from_here(interaction: discord.Interaction, message: discord.Message):
-    await interaction.response.send_message(f"Summarizing messages before: ``{message.content}``")
+    await interaction.response.send_modal(MessageCountModal(message, False ))
 
 async def main():
     async with bot:
         await bot.start(discord_token)
-
 
 asyncio.run(main())
