@@ -52,11 +52,11 @@ class MessageCountModal(Modal, title="Summarize Messages"):
             else:
                 await interaction.response.send_message("An unexpected error occurred.", ephemeral=True)
             return
-        print (count)
+        print (f"count: {count}")
         if self.summ_after:
             messages = [self.message] + [msg async for msg in interaction.channel.history(after=self.message, limit=count - 1)]
         else:
-            messages = [msg async for msg in interaction.channel.history(limit=count)]
+            messages = [self.message] + [msg async for msg in interaction.channel.history(before=self.message, limit=count)] 
         
         user_input = ''
 
@@ -71,7 +71,7 @@ class MessageCountModal(Modal, title="Summarize Messages"):
         print(user_input)
         genai_response = self.model.generate_content(user_input).text
         direction = "next" if self.summ_after else "previous"
-        genai_response = f"`summary of the {direction} {count} messages:`" + "\n\n" + genai_response
+        genai_response = f"`summary of the {count} {direction} messages:`" + "\n\n" + genai_response
         
         for i in range (0, len(genai_response), 2000):
             await interaction.response.send_message(genai_response[i:i+2000], ephemeral=(send_summ.lower() in ["no", "n"]))
