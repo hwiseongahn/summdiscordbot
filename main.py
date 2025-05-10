@@ -25,7 +25,6 @@ GUILD_ID = discord.Object(id=1319142553030885447)
 async def change_bot_status():
     await bot.change_presence(activity=discord.CustomActivity(name=next(bot_statuses)))
 
-
 @bot.event
 async def on_ready():
     print("Bot ready!")
