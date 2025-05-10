@@ -83,7 +83,7 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int, send_sum
 
 @bot.tree.command(name="bullet", description="bullet form summarize this conversation")
 @app_commands.describe(msg_to_summ="How many previous messages should be summarized in bullet form?")
-async def summarize(interaction: discord.Interaction, msg_to_summ: int):
+async def bullet(interaction: discord.Interaction, msg_to_summ: int):
     if msg_to_summ > 300:
         await interaction.response.send_message("cannot summarize more than 300 messages", ephemeral=True)
         return
