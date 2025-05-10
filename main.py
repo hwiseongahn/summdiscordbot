@@ -73,7 +73,7 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int, send_sum
     user_input = "summarize this conversation:\n " + user_input
     print(user_input)
     genai_response = model.generate_content(user_input).text
-    genai_response = "summary of the last " + str(msg_to_summ) + " messages:\n" + genai_response
+    genai_response = "`summary of the last " + str(msg_to_summ) + " messages:`" + "\n\n" + genai_response
 
     if send_summary:
         await interaction.followup.send(genai_response, ephemeral=False)
@@ -97,8 +97,8 @@ async def summarize(interaction: discord.Interaction, msg_to_summ: int):
     user_input = f"summarize this conversation using bullet points only. Do not use any non-bulletpoint sentences. Use '-' as bullet points, ' - ' for subbullet points, and # for header, similar to markdown. Add a summarized title to the bulletpoints before the bullet points using a header title using #. The conversation is:\n " + user_input
     print(user_input)
     genai_response = model.generate_content(user_input).text
-    await interaction.response.send_message(
-        f"## {interaction.user.name} said to summarize the last {msg_to_summ} messages in bullet form.")
+    genai_response = "`summary of the last " + str(msg_to_summ) + " messages:`" + "\n" + genai_response
+
     for i in range(0, len(genai_response), 2000):
         await interaction.channel.send(genai_response[i:i + 2000])
 
